@@ -1,0 +1,31 @@
+### 測試 1: 建立一張成功訂單 (自取)
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "測試員小明",
+  "phone": "0912345678",
+  "tireBrand": "Michelin",
+  "tireSeries": "Pilot Sport 5",
+  "tireSize": "225/40/R18",
+  "quantity": 4,
+  "installationOption": "NO_PICKUP"
+}
+
+### 測試 2: 建立一張失敗訂單 (選配送但沒填地址 -> 應該回傳 400)
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "粗心的客戶",
+  "phone": "0988777666",
+  "tireBrand": "Bridgestone",
+  "tireSeries": "Alenza",
+  "tireSize": "235/55/R19",
+  "quantity": 2,
+  "installationOption": "NO_DELIVERY",
+  "deliveryAddress": ""
+}
+
+### 測試 3: 查詢所有訂單
+GET http://localhost:8080/api/orders
