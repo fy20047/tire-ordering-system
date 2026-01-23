@@ -1,7 +1,9 @@
-# env
+# Env / Secrets
 .env
+*.local.yml
+*.local.properties
 
-# database volume
+# Docker volumes (database volume)
 **/mariadb_data/
 **/data/
 
@@ -9,6 +11,12 @@
 .DS_Store
 .vscode/
 .idea/
+
+# Java / Maven
+**/target/
+**/.classpath
+**/.project
+**/.settings/
 
 # logs
 *.log

@@ -3,10 +3,10 @@ services:
     image: mariadb:11
     container_name: tire_mariadb
     environment:
-      MARIADB_DATABASE: tire_shop # 資料庫
-      MARIADB_USER: app # 帳號
-      MARIADB_PASSWORD: app_pw # 密碼
-      MARIADB_ROOT_PASSWORD: root_pw
+      MARIADB_DATABASE: ${MARIADB_DATABASE}p # 資料庫
+      MARIADB_USER: ${MARIADB_DATABASE} # 帳號
+      MARIADB_PASSWORD: ${MARIADB_USER} # 密碼
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       TZ: Asia/Taipei
     ports:
       - "3307:3306"
