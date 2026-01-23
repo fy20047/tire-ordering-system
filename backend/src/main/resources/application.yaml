@@ -1,3 +1,8 @@
 spring:
   application:
     name: backend
+  datasource:
+    url: jdbc:mariadb://localhost:3307/tire_shop
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver

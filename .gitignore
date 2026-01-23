@@ -1,5 +1,7 @@
 # Env / Secrets
 .env
+.env.*
+!.env.example
 *.local.yml
 *.local.properties
 
