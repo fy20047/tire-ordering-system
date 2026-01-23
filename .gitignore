@@ -1,0 +1,14 @@
+# env
+.env
+
+# database volume
+**/mariadb_data/
+**/data/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# logs
+*.log
