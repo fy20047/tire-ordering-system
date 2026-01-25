@@ -22,3 +22,13 @@
 
 # logs
 *.log
+
+# Legacy Next.js pages/components kept locally (do not commit)
+frontend/src/pages/**/*.js
+frontend/src/components/**/*.js
+frontend/styles/
+frontend/README.txt
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
