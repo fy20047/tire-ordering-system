@@ -1,17 +1,19 @@
 package com.fy20047.tireordering.backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
+import jakarta.persistence.*; // 使用 * 讓 import 比較簡潔
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tires")
+// Lombok
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+// --------------------
 public class Tire {
 
     @Id
@@ -30,6 +32,7 @@ public class Tire {
     @Column
     private Integer price;
 
+    @Builder.Default // 因為有預設值 true，所以加上 @Builder.Default
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
@@ -39,70 +42,7 @@ public class Tire {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getSeries() {
-        return series;
-    }
-
-    public void setSeries(String series) {
-        this.series = series;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
+    // 設定時間戳記
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
