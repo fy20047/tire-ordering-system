@@ -20,6 +20,10 @@ public class TireService {
         return tireRepository.findActiveTires();
     }
 
+    public List<Tire> getAllTires() {
+        return tireRepository.findAll();
+    }
+
     public Tire getTireById(Long tireId) {
         return tireRepository.findById(tireId)
                 .orElseThrow(() -> new IllegalArgumentException("Tire not found"));

@@ -22,13 +22,14 @@ public class OrderService {
 
     // 收單
     public Order createOrder(CreateOrderCommand command) {
-        // 檢查
+        // 檢查 tireId/quantity/phone/deliveryAddress 等業務規則
         validate(command);
 
-        // 確認商品
+        // 確認輪胎是否存在
         Tire tire = tireRepository.findById(command.tireId())
                 .orElseThrow(() -> new IllegalArgumentException("Tire not found"));
 
+        // 上架檢查
         if (!tire.isActive()) {
             throw new IllegalStateException("Tire is not available");
         }
@@ -46,7 +47,7 @@ public class OrderService {
                 .notes(normalize(command.notes()))
                 .build();
 
-        // 成立訂單
+        // 成立訂單，存到 DB
         return orderRepository.save(order);
     }
 
