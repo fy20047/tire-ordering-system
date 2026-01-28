@@ -3,6 +3,7 @@ package com.fy20047.tireordering.backend.service;
 import com.fy20047.tireordering.backend.entity.Tire;
 import com.fy20047.tireordering.backend.repository.TireRepository;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,7 @@ public class TireService {
     }
 
     public List<Tire> getAllTires() {
-        return tireRepository.findAll();
+        return tireRepository.findAll(Sort.by("brand", "series", "size"));
     }
 
     public Tire getTireById(Long tireId) {
