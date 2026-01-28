@@ -26,6 +26,9 @@ public class Tire {
     @Column(nullable = false, length = 100)
     private String series;
 
+    @Column(length = 50)
+    private String origin;
+
     @Column(nullable = false, length = 50)
     private String size;
 

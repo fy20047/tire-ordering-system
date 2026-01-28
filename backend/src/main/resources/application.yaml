@@ -6,3 +6,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # 當啟動時，如果表不存在就建立，欄位有變更就更新

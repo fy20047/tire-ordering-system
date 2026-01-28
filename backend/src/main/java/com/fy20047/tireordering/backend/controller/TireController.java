@@ -51,6 +51,7 @@ public class TireController {
                 tire.getId(),
                 tire.getBrand(),
                 tire.getSeries(),
+                tire.getOrigin(),
                 tire.getSize(),
                 tire.getPrice(),
                 tire.isActive()
