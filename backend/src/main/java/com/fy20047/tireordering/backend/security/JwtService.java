@@ -11,18 +11,22 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
-// 產生/解析 JWT
+// 產生 / 驗證 JWT
+// 讓 Controller / Service 不需要自己處理 token
+// 任何 JWT 失敗都會丟例外
+// secret 長度不足會報 WeakKeyException
 @Service
 public class JwtService {
 
     private final SecretKey secretKey;
     private final long expirationSeconds;
 
-    public JwtService(JwtProperties properties) {
+    public JwtService(JwtProperties properties) { // 避免寫死，使用 JwtProperties 讀取設定檔與環境變數
         this.secretKey = Keys.hmacShaKeyFor(properties.secret().getBytes(StandardCharsets.UTF_8));
         this.expirationSeconds = properties.expirationSeconds();
     }
 
+    // 寫登入流程（產 token）- 2. 發 token
     public String generateToken(Admin admin) {
         Instant now = Instant.now();
         return Jwts.builder()

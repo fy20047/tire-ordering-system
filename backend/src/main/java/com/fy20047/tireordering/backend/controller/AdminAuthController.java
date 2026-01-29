@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// /api/admin/login 登入 API
+// 寫登入流程（產 token）- 3. /api/admin/login 登入 API
 @RestController
 @RequestMapping("/api/admin")
 public class AdminAuthController {

@@ -2,7 +2,8 @@ package com.fy20047.tireordering.backend.dto;
 
 import java.time.LocalDateTime;
 
-// 後台輪胎資料 Response DTO
+// 後台輪胎列表回傳
+// 統一回傳格式 { items: [...] }，這樣前端才好處理
 public record AdminTireResponse(
         Long id,
         String brand,

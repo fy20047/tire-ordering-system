@@ -14,7 +14,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// 驗證請求是否帶有效 JWT
+// 驗證請求是否帶有效 JWT (每次請求攔截，都驗證 JWT)
+// Spring Security 用 Filter 來驗證請求
+// 解析 Authorization: Bearer <token>
+// 無 token 就不會有登入身份
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -38,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
         try {
-            Claims claims = jwtService.parseToken(token);
+            Claims claims = jwtService.parseToken(token); // 驗證 token 是否有效
             String username = claims.getSubject();
             String role = claims.get("role", String.class);
             if (username != null && role != null) {

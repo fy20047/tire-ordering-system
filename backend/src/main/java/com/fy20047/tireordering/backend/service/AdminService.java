@@ -22,10 +22,12 @@ public class AdminService {
         this.jwtService = jwtService;
     }
 
+    // 寫登入流程（產 token）- 1. 驗證帳密
     public String login(String username, String password) {
         Admin admin = adminRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid username or password"));
 
+        // 將使用者輸入的密碼去比對資料庫裡的 hash
         if (!passwordEncoder.matches(password, admin.getPasswordHash())) {
             throw new IllegalArgumentException("Invalid username or password");
         }

@@ -15,7 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// 管理員資料表 Entity
+// 對應 admins 資料表，存管理員帳號與密碼 hash (密碼只存 hash，不存明文)
+// Spring JPA 需要 Entity 才能存取 DB
 @Entity
 @Table(name = "admins")
 @Getter
@@ -32,6 +33,7 @@ public class Admin {
     @Column(nullable = false, unique = true, length = 100)
     private String username;
 
+    // 密碼欄位
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
