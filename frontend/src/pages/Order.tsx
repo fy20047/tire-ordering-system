@@ -52,7 +52,6 @@ const OrderPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>(null);
   const [submitMessage, setSubmitMessage] = useState('');
-  const [orderId, setOrderId] = useState<number | string | null>(null);
 
   const widthOptions = useMemo(() => {
     const widths = new Set<string>();
@@ -218,7 +217,6 @@ const OrderPage = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
     setSubmitMessage('');
-    setOrderId(null);
 
     const payload = {
       tireId: selectedTireId,
@@ -246,7 +244,6 @@ const OrderPage = () => {
 
       if (response.ok) {
         const returnedOrderId = result.orderId ?? result.id ?? '—';
-        setOrderId(returnedOrderId);
         setSubmitStatus('success');
         setSubmitMessage(`訂單已送出，您的單號為：${returnedOrderId}，客服將與您聯繫確認！`);
         setFormData((prev) => ({
@@ -275,7 +272,6 @@ const OrderPage = () => {
   const handleResetOrder = () => {
     setSubmitStatus(null);
     setSubmitMessage('');
-    setOrderId(null);
     if (!isTireLocked) {
       setSelectedTireId(null);
     }
