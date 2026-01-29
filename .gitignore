@@ -23,6 +23,9 @@
 # logs
 *.log
 
+# IntelliJ HTTP client env (local secrets)
+http-client.env.json
+
 # Legacy Next.js pages/components kept locally (do not commit)
 frontend/src/pages/**/*.js
 frontend/src/components/**/*.js

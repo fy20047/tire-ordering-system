@@ -1,0 +1,55 @@
+### Admin login (store token)
+POST {{baseUrl}}/api/admin/login
+Content-Type: application/json
+
+{
+  "username": "{{adminUser}}",
+  "password": "{{adminPass}}"
+}
+
+> {% client.global.set("token", response.body.token); %}
+
+### List tires (admin)
+GET {{baseUrl}}/api/admin/tires
+Authorization: Bearer {{token}}
+
+### Search tires (admin)
+GET {{baseUrl}}/api/admin/tires?brand={{brand}}&series={{series}}&size={{size}}&active={{active}}
+Authorization: Bearer {{token}}
+
+### Create tire (admin)
+POST {{baseUrl}}/api/admin/tires
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "brand": "Bridgestone",
+  "series": "ALENZA H/L 33",
+  "origin": "日本",
+  "size": "225/60 R18",
+  "price": 3850,
+  "isActive": true
+}
+
+### Update tire (admin)
+PUT {{baseUrl}}/api/admin/tires/{{tireId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "brand": "Bridgestone",
+  "series": "ALENZA H/L 33",
+  "origin": "日本",
+  "size": "225/60 R18",
+  "price": 3900,
+  "isActive": true
+}
+
+### Toggle tire active (admin)
+PATCH {{baseUrl}}/api/admin/tires/{{tireId}}/active
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "isActive": false
+}
