@@ -3,13 +3,13 @@ services:
     image: mariadb:11
     container_name: tire_mariadb
     environment:
-      MARIADB_DATABASE: ${MARIADB_DATABASE} # 資料庫
-      MARIADB_USER: ${MARIADB_USER} # 帳號
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD} # 密碼
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME} # 資料庫
+      MARIADB_USER: ${DB_USERNAME} # 帳號
+      MARIADB_PASSWORD: ${DB_PASSWORD} # 密碼
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       TZ: Asia/Taipei
     ports:
-      - "3307:3306"
+      - "${DB_PORT}:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
 
@@ -23,3 +23,4 @@ services:
 
 volumes:
   mariadb_data: # Adminer 要等 mariadb 先啟動
+
