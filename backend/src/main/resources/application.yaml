@@ -1,11 +1,18 @@
-spring:
+﻿spring:
   application:
     name: backend
   datasource:
     url: "jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:tire_shop}"
-    username: ${DB_USERNAME:app}
-    password: ${DB_PASSWORD:app_fy25228305}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update # 當啟動時，如果表不存在就建立，欄位有變更就更新
+      ddl-auto: update # 開發階段自動建表/更新
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
+
+
