@@ -296,10 +296,19 @@ const OrderPage = () => {
     return match ? match[1] : null;
   }
 
+  function formatTireOptionLabel(tire: Tire) {
+    const size = tire.size?.trim(); // 拿輪胎尺寸，順便去掉前後空白
+    const hasRealSize = size && size !== '-' && size !== '—'; // 判斷尺寸是不是有效，只要尺寸不是 - 或 —，就算有效
+    const parts = [tire.brand, tire.series, hasRealSize ? size : ''].filter(Boolean);
+    const baseLabel = parts.join(' ');
+    const priceLabel = tire.price !== null ? ` - ${tire.price} 元` : ''; // 如果有價格才加 - 價格
+    return `${baseLabel}${priceLabel}`;
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.pageTitle}>輪胎訂購</h1>
-      <p className={styles.pageSubtitle}>選擇輪胎後填寫基本資料，送出後客服將與您聯繫。</p>
+      <p className={styles.pageSubtitle}>填寫完畢後，店家會主動與您聯繫確認後續資料、價格、付費等流程。</p>
 
       {submitStatus === 'success' && (
         <div className={`${styles.submitMessage} ${styles.successMessage}`}>
@@ -360,14 +369,18 @@ const OrderPage = () => {
                   >
                     <option value="">請選擇輪胎</option>
                     {filteredTireOptions.map((tire) => (
-                      <option key={tire.id} value={tire.id}>
-                        {tire.brand} {tire.series} {tire.size}
-                        {tire.price !== null ? ` - ${tire.price} 元` : ''}
-                      </option>
-                    ))}
+                    <option key={tire.id} value={tire.id}>
+                      {formatTireOptionLabel(tire)}
+                    </option>
+                  ))}
                   </select>
                   {isTireLocked && (
                     <p className={styles.helperText}>此輪胎由促銷頁帶入，已鎖定。</p>
+                  )}
+                  {!isTireLocked && (
+                    <p className={styles.helperText}>
+                      找不到輪胎？請在備註填寫型號與尺寸，我們會協助確認。
+                    </p>
                   )}
                 </div>
               </>
