@@ -293,6 +293,7 @@ const AdminOrders = () => {
             <table className={styles.table}>
               <thead>
                 <tr>
+                  <th>訂單編號</th>
                   <th>訂單</th>
                   <th>客戶資料</th>
                   <th>輪胎資訊</th>
@@ -304,14 +305,16 @@ const AdminOrders = () => {
               <tbody>
                 {filteredOrders.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className={styles.emptyCell}>查無資料</td>
+                    <td colSpan={7} className={styles.emptyCell}>查無資料</td>
                   </tr>
                 ) : (
                   filteredOrders.map((order) => (
                     <tr key={order.id}>
                       <td>
+                        <span className={styles.orderId}>#{order.id}</span>
+                      </td>
+                      <td>
                         <div className={styles.cellStack}>
-                          <span className={styles.cellTitle}>#{order.id}</span>
                           <span>數量：{order.quantity}</span>
                           <span>{installationLabel[order.installationOption]}</span>
                         </div>

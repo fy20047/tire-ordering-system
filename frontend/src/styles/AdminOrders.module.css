@@ -1,9 +1,9 @@
 ﻿.container {
   min-height: calc(100vh - 70px - 100px);
-  padding: 2rem 3rem;
+  padding: 2rem 2.25rem;
   background-color: #1a1a1a;
   color: #ffffff;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -187,6 +187,11 @@
   color: #ffffff;
 }
 
+.orderId {
+  font-weight: 700;
+  color: #ffffff;
+}
+
 .noteText {
   color: #ffbcbc;
 }
@@ -232,7 +237,7 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 1.5rem 1.25rem;
+    padding: 1.5rem 1rem;
   }
 
   .header {
@@ -244,3 +249,5 @@
     min-width: 840px;
   }
 }
+
+
