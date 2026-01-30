@@ -3,6 +3,7 @@ import Layout from './components/Layout.tsx';
 import Home from './pages/Home.tsx';
 import Promotions from './pages/Promotions.tsx';
 import FindTires from './pages/FindTires.tsx';
+import TireSeriesPage from './pages/TireSeries.tsx';
 import OrderPage from './pages/Order.tsx';
 import AdminLogin from './pages/AdminLogin.tsx';
 import AdminOrders from './pages/AdminOrders.tsx';
@@ -18,7 +19,7 @@ const App = () => {
           <Route path="/promotions" element={<Promotions />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/find-tires" element={<FindTires />} />
-          <Route path="/tire-series" element={<PagePlaceholder title="輪胎系列" />} />
+          <Route path="/tire-series" element={<TireSeriesPage />} />
           <Route path="/tire-knowledge" element={<PagePlaceholder title="輪胎知識" />} />
           <Route path="/repair-services" element={<PagePlaceholder title="維修價目表" />} />
           <Route path="/about" element={<PagePlaceholder title="關於我們" />} />
