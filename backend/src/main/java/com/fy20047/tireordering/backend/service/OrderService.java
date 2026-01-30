@@ -3,8 +3,10 @@ package com.fy20047.tireordering.backend.service;
 import com.fy20047.tireordering.backend.entity.Order;
 import com.fy20047.tireordering.backend.entity.Tire;
 import com.fy20047.tireordering.backend.enums.InstallationOption;
+import com.fy20047.tireordering.backend.enums.OrderStatus;
 import com.fy20047.tireordering.backend.repository.OrderRepository;
 import com.fy20047.tireordering.backend.repository.TireRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +53,22 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
+    // 後台查詢訂單列表
+    public List<Order> listOrders(OrderStatus status) {
+        if (status == null) {
+            return orderRepository.findAllByOrderByCreatedAtDesc();
+        }
+        return orderRepository.findByStatusOrderByCreatedAtDesc(status);
+    }
+
+    // 更新狀態
+    public Order updateOrderStatus(Long id, OrderStatus status) {
+        Order order = getOrderById(id); // 取得訂單（共用）
+        order.setStatus(status);
+        return orderRepository.save(order);
+    }
+
     private void validate(CreateOrderCommand command) {
         if (command == null) {
             throw new IllegalArgumentException("Order payload is required");
@@ -86,6 +104,11 @@ public class OrderService {
     // 把使用者輸入的多餘空白（空白鍵）修剪掉 (清洗資料)
     private String normalize(String value) {
         return isBlank(value) ? null : value.trim();
+    }
+
+    public Order getOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
     }
 
     public record CreateOrderCommand(
