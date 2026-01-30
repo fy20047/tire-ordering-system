@@ -286,9 +286,14 @@ const AdminTires = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>輪胎商品管理</h1>
-        <button type="button" className={styles.secondaryButton} onClick={handleLogout}>
-          登出
-        </button>
+        <div className={styles.headerActions}>
+          <button type="button" className={styles.secondaryButton} onClick={() => navigate('/admin/orders')}>
+            前往訂單管理
+          </button>
+          <button type="button" className={styles.secondaryButton} onClick={handleLogout}>
+            登出
+          </button>
+        </div>
       </div>
 
       <section className={styles.card}>
