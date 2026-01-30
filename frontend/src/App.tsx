@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.tsx';
+import Home from './pages/Home';
 import OrderPage from './pages/Order';
 import AdminLogin from './pages/AdminLogin';
 import AdminOrders from './pages/AdminOrders';
@@ -11,7 +12,7 @@ const App = () => {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<PagePlaceholder title="首頁" />} />
+          <Route path="/" element={<Home />} />
           <Route path="/promotions" element={<PagePlaceholder title="最新輪胎促銷" />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/find-tires" element={<PagePlaceholder title="尋找輪胎" />} />
