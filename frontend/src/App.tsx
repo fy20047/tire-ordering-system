@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.tsx';
 import OrderPage from './pages/Order';
 import AdminLogin from './pages/AdminLogin';
+import AdminTires from './pages/AdminTires';
 import PagePlaceholder from './pages/PagePlaceholder';
 
 const App = () => {
@@ -19,7 +20,7 @@ const App = () => {
           <Route path="/about" element={<PagePlaceholder title="關於我們" />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/orders" element={<PagePlaceholder title="訂單管理" />} />
-          <Route path="/admin/tires" element={<PagePlaceholder title="輪胎商品管理" />} />
+          <Route path="/admin/tires" element={<AdminTires />} />
           <Route path="/admin/promotions" element={<PagePlaceholder title="促銷活動管理" />} />
           <Route path="/admin/analytics" element={<PagePlaceholder title="訪客統計" />} />
           <Route path="*" element={<PagePlaceholder title="頁面不存在" />} />
