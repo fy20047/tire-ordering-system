@@ -1,4 +1,4 @@
-### Admin login (store token)
+## 1.  登入並自動抓取 Token - Admin login (store token)
 POST {{baseUrl}}/api/admin/login
 Content-Type: application/json
 
@@ -7,17 +7,23 @@ Content-Type: application/json
   "password": "{{adminPass}}"
 }
 
+### 在登入成功後，自動從伺服器回傳的內容中取出 token，並存入全域變數中，這樣後續的請求就不需要手動貼上 Token
+
 > {% client.global.set("token", response.body.token); %}
 
-### List tires (admin)
+## 2. 查詢與列表 (GET) - 用來確認目前系統中有哪些輪胎
+
+### 2-1. List tires (admin)
 GET {{baseUrl}}/api/admin/tires
 Authorization: Bearer {{token}}
 
-### Search tires (admin)
+### 2-2. Search tires (admin)
 GET {{baseUrl}}/api/admin/tires?brand={{brand}}&series={{series}}&size={{size}}&active={{active}}
 Authorization: Bearer {{token}}
 
-### Create tire (admin)
+## 3. 新增、更新與狀態切換 (POST, PUT, PATCH)
+
+### 3-1. Create tire (admin) - 建立一條輪胎資料
 POST {{baseUrl}}/api/admin/tires
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -31,7 +37,7 @@ Authorization: Bearer {{token}}
   "isActive": true
 }
 
-### Update tire (admin)
+### 3-2. Update tire (admin) - 修改指定 {{tireId}} 的輪胎資訊（把價格從 3850 改成 3900）
 PUT {{baseUrl}}/api/admin/tires/{{tireId}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -45,7 +51,7 @@ Authorization: Bearer {{token}}
   "isActive": true
 }
 
-### Toggle tire active (admin)
+### 3-3. Toggle tire active (admin) - 測試局部更新，切換輪胎的 isActive 狀態
 PATCH {{baseUrl}}/api/admin/tires/{{tireId}}/active
 Content-Type: application/json
 Authorization: Bearer {{token}}
