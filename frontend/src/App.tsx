@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout.tsx';
-import Home from './pages/Home';
-import OrderPage from './pages/Order';
-import AdminLogin from './pages/AdminLogin';
-import AdminOrders from './pages/AdminOrders';
-import AdminTires from './pages/AdminTires';
-import PagePlaceholder from './pages/PagePlaceholder';
+import Home from './pages/Home.tsx';
+import Promotions from './pages/Promotions.tsx';
+import OrderPage from './pages/Order.tsx';
+import AdminLogin from './pages/AdminLogin.tsx';
+import AdminOrders from './pages/AdminOrders.tsx';
+import AdminTires from './pages/AdminTires.tsx';
+import PagePlaceholder from './pages/PagePlaceholder.tsx';
 
 const App = () => {
   return (
@@ -13,7 +14,7 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/promotions" element={<PagePlaceholder title="最新輪胎促銷" />} />
+          <Route path="/promotions" element={<Promotions />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/find-tires" element={<PagePlaceholder title="尋找輪胎" />} />
           <Route path="/tire-series" element={<PagePlaceholder title="輪胎系列" />} />
