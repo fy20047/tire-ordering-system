@@ -93,18 +93,24 @@ const AdminTires = () => {
         }
       });
 
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('adminToken');
         navigate('/admin/login');
         return;
       }
 
-      const data = await response.json();
       if (!response.ok) {
-        setErrorMessage(data.message || '載入輪胎資料失敗。');
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          setErrorMessage(data.message || `載入輪胎資料失敗（${response.status}）。`);
+        } else {
+          setErrorMessage(`載入輪胎資料失敗（${response.status}）。`);
+        }
         return;
       }
 
+      const data = await response.json();
       setTires(data.items ?? []);
     } catch (error) {
       setErrorMessage('載入輪胎資料失敗，請稍後再試。');
@@ -130,10 +136,15 @@ const AdminTires = () => {
   };
 
   const handleFormChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type, checked } = event.target;
+    const target = event.target;
+    const value =
+      target instanceof HTMLInputElement && target.type === 'checkbox'
+        ? target.checked
+        : target.value;
+
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [target.name]: value
     }));
   };
 
@@ -192,15 +203,20 @@ const AdminTires = () => {
         body: JSON.stringify(payload)
       });
 
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('adminToken');
         navigate('/admin/login');
         return;
       }
 
-      const data = await response.json();
       if (!response.ok) {
-        setErrorMessage(data.message || '儲存失敗，請確認欄位內容。');
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          setErrorMessage(data.message || '儲存失敗，請確認欄位內容。');
+        } else {
+          setErrorMessage(`儲存失敗（${response.status}）。`);
+        }
         return;
       }
 
@@ -230,15 +246,20 @@ const AdminTires = () => {
         body: JSON.stringify({ isActive: !tire.isActive })
       });
 
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         localStorage.removeItem('adminToken');
         navigate('/admin/login');
         return;
       }
 
       if (!response.ok) {
-        const data = await response.json();
-        setErrorMessage(data.message || '更新狀態失敗。');
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          setErrorMessage(data.message || '更新狀態失敗。');
+        } else {
+          setErrorMessage(`更新狀態失敗（${response.status}）。`);
+        }
         return;
       }
 
@@ -254,7 +275,12 @@ const AdminTires = () => {
   };
 
   const formatPrice = (price: number | null) => (price === null ? '—' : price.toLocaleString());
-  const formatDate = (value?: string) => (value ? value.replace('T', ' ') : '—');
+  const formatDate = (value?: string) => {
+    if (!value) return '—';
+    const normalized = value.replace('T', ' ');
+    const withoutMs = normalized.split('.')[0];
+    return withoutMs.replace('Z', '');
+  };
 
   return (
     <div className={styles.container}>
@@ -264,66 +290,6 @@ const AdminTires = () => {
           登出
         </button>
       </div>
-
-      <section className={styles.card}>
-        <h2 className={styles.sectionTitle}>搜尋/篩選</h2>
-        <form className={styles.filterForm} onSubmit={handleSearch}>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="brand">品牌</label>
-              <input
-                id="brand"
-                name="brand"
-                value={filters.brand}
-                onChange={handleFilterChange}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="series">系列</label>
-              <input
-                id="series"
-                name="series"
-                value={filters.series}
-                onChange={handleFilterChange}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="size">尺寸</label>
-              <input
-                id="size"
-                name="size"
-                value={filters.size}
-                onChange={handleFilterChange}
-                className={styles.input}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="active">上架狀態</label>
-              <select
-                id="active"
-                name="active"
-                value={filters.active}
-                onChange={handleFilterChange}
-                className={styles.input}
-              >
-                <option value="all">全部</option>
-                <option value="true">上架中</option>
-                <option value="false">已下架</option>
-              </select>
-            </div>
-          </div>
-          <div className={styles.actionsRow}>
-            <button type="submit" className={styles.primaryButton} disabled={loading}>
-              {loading ? '搜尋中...' : '搜尋'}
-            </button>
-            <button type="button" className={styles.secondaryButton} onClick={handleResetFilters}>
-              清除條件
-            </button>
-          </div>
-        </form>
-      </section>
 
       <section className={styles.card}>
         <h2 className={styles.sectionTitle}>{editingId ? '編輯輪胎' : '新增輪胎'}</h2>
@@ -409,6 +375,66 @@ const AdminTires = () => {
                 取消編輯
               </button>
             )}
+          </div>
+        </form>
+      </section>
+
+      <section className={styles.card}>
+        <h2 className={styles.sectionTitle}>搜尋/篩選</h2>
+        <form className={styles.filterForm} onSubmit={handleSearch}>
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.label} htmlFor="brand">品牌</label>
+              <input
+                id="brand"
+                name="brand"
+                value={filters.brand}
+                onChange={handleFilterChange}
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label} htmlFor="series">系列</label>
+              <input
+                id="series"
+                name="series"
+                value={filters.series}
+                onChange={handleFilterChange}
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label} htmlFor="size">尺寸</label>
+              <input
+                id="size"
+                name="size"
+                value={filters.size}
+                onChange={handleFilterChange}
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label} htmlFor="active">上架狀態</label>
+              <select
+                id="active"
+                name="active"
+                value={filters.active}
+                onChange={handleFilterChange}
+                className={styles.input}
+              >
+                <option value="all">全部</option>
+                <option value="true">上架中</option>
+                <option value="false">已下架</option>
+              </select>
+            </div>
+          </div>
+          <div className={styles.actionsRow}>
+            <button type="submit" className={styles.primaryButton} disabled={loading}>
+              {loading ? '搜尋中...' : '搜尋'}
+            </button>
+            <button type="button" className={styles.secondaryButton} onClick={handleResetFilters}>
+              清除條件
+            </button>
           </div>
         </form>
       </section>
