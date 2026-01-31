@@ -34,7 +34,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar} ref={navRef}>
       <div className={styles.logoContainer}>
-        <Link to="/" className={styles.logoImageLink}>
+        <Link to="/" className={styles.logoImageLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <img
             src="/images/bridgestone_logo.jpg"
             alt="Bridgestone Logo"
@@ -43,8 +43,8 @@ const Navbar = () => {
             className={styles.siteLogoImage}
           />
         </Link>
-        <Link to="/" className={styles.siteTitleLink}>
-          <span className={styles.siteTitle}>輪胎專賣店</span>
+        <Link to="/" className={styles.siteTitleLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <span className={styles.siteTitle}>廣翊輪胎館</span>
         </Link>
       </div>
       <div className={styles.hamburger} onClick={toggleMenu}>
@@ -59,8 +59,8 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/find-tires" onClick={menuOpen ? toggleMenu : undefined}>
-            尋找輪胎
+          <Link to="/repair-services" onClick={menuOpen ? toggleMenu : undefined}>
+            維修價目表
           </Link>
         </li>
         <li>
@@ -74,13 +74,13 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/tire-knowledge" onClick={menuOpen ? toggleMenu : undefined}>
-            輪胎知識
+          <Link to="/find-tires" onClick={menuOpen ? toggleMenu : undefined}>
+            尋找輪胎
           </Link>
         </li>
         <li>
-          <Link to="/repair-services" onClick={menuOpen ? toggleMenu : undefined}>
-            維修價目表
+          <Link to="/tire-knowledge" onClick={menuOpen ? toggleMenu : undefined}>
+            輪胎知識
           </Link>
         </li>
         <li>
