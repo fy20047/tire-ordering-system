@@ -1,8 +1,14 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .mainContent {
   padding-top: 70px; /* Navbar height, adjust as needed */
-  padding-bottom: 120px; /* 假設 Footer 高度約 100px +一些間距 */
-  position: relative; /* 為了讓 Footer 能正確定位 (如果 Footer 未來需要 absolute 定位)*/
-  min-height: calc(100vh - 100px - 70px); /* 減去 Footer 和 Navbar 高度 */
+  padding-bottom: 40px;
+  position: relative;
+  flex: 1;
 }
 
 /* 如果我們把 Footer 也移到 Layout.js，相關樣式可以放在這裡 */
@@ -14,8 +20,29 @@
   justify-content: center;
   align-items: center;
   background-color: #111111;
-  position: relative; /* 或者 absolute/fixed，取決於設計 */
-  bottom: 0;
+  margin-top: auto;
+}
+
+.footerContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.footerContent p {
+  margin: 0;
+}
+
+.footerContent a {
+  color: #cccccc;
+  text-decoration: none;
+}
+
+.footerContent a:hover {
+  color: #ff3333;
 }
 
 .footer p {
