@@ -64,6 +64,11 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
+          <Link to="/order" onClick={menuOpen ? toggleMenu : undefined}>
+            訂購表單
+          </Link>
+        </li>
+        <li>
           <Link to="/tire-series" onClick={menuOpen ? toggleMenu : undefined}>
             輪胎系列
           </Link>
