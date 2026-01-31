@@ -29,6 +29,9 @@ const OrderPage = () => {
   const tireIdParam = searchParams.get('tireId');
   const parsedTireId = tireIdParam ? Number(tireIdParam) : null;
   const hasTireId = parsedTireId !== null && Number.isFinite(parsedTireId);
+  const seriesParam = (searchParams.get('series') ?? '').trim();
+  const sizeParam = (searchParams.get('size') ?? '').trim();
+  const hasPrefill = Boolean(seriesParam || sizeParam);
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
   const [tireOptions, setTireOptions] = useState<Tire[]>([]);
@@ -115,6 +118,23 @@ const OrderPage = () => {
           if (matched) {
             setSelectedTireId(matched.id);
             setIsTireLocked(true);
+            const matchedWidth = extractWidth(matched.size);
+            if (matchedWidth) {
+              setWidthFilter(matchedWidth);
+            }
+          } else {
+            setTireError('找不到指定輪胎，請手動選擇。');
+            setIsTireLocked(false);
+          }
+        } else if (hasPrefill) {
+          const matched = items.find((item: Tire) => matchesPrefill(item, seriesParam, sizeParam));
+          if (matched) {
+            setSelectedTireId(matched.id);
+            setIsTireLocked(true);
+            const matchedWidth = extractWidth(matched.size);
+            if (matchedWidth) {
+              setWidthFilter(matchedWidth);
+            }
           } else {
             setTireError('找不到指定輪胎，請手動選擇。');
             setIsTireLocked(false);
@@ -135,7 +155,7 @@ const OrderPage = () => {
     return () => {
       isActive = false;
     };
-  }, [apiBaseUrl, hasTireId, parsedTireId]);
+  }, [apiBaseUrl, hasTireId, parsedTireId, hasPrefill, seriesParam, sizeParam]);
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -294,6 +314,24 @@ const OrderPage = () => {
     }
     const match = size.match(/^(\d{3})\s*\/?/);
     return match ? match[1] : null;
+  }
+
+  function normalizeText(value: string) {
+    return value.trim().toLowerCase();
+  }
+
+  function normalizeSize(value: string) {
+    return value.replace(/\s+/g, '').toUpperCase();
+  }
+
+  function matchesPrefill(tire: Tire, series: string, size: string) {
+    if (series && normalizeText(tire.series) !== normalizeText(series)) {
+      return false;
+    }
+    if (size && normalizeSize(tire.size) !== normalizeSize(size)) {
+      return false;
+    }
+    return true;
   }
 
   function formatTireOptionLabel(tire: Tire) {

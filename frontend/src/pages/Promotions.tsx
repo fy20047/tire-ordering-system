@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from '../styles/Promotions.module.css';
 
 type PromotionItem = {
@@ -16,9 +17,8 @@ type InstallationCost = {
 };
 
 type ParsedPromo = {
-  brand: string;
   series: string;
-  specDetails: string;
+  size: string;
 };
 
 const promotionsData: PromotionItem[] = [
@@ -104,12 +104,6 @@ const installationCostsInfo: InstallationCost[] = [
 
 const SHIPPING_COST_PER_TIRE = 100;
 
-const GOOGLE_FORM_BASE_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSdVsteDE7s__Z2uatFTiVChg9YkM8srsN_uTZaZerihbtZJjQ/viewform';
-const GOOGLE_FORM_ENTRY_ID_BRAND = 'entry.1921662082';
-const GOOGLE_FORM_ENTRY_ID_SERIES = 'entry.1072112746';
-const GOOGLE_FORM_ENTRY_ID_SPECS = 'entry.1105943312';
-
 const getWidthFromTireName = (name: string): string | null => {
   const parts = name.split(' ');
   if (parts.length > 1) {
@@ -122,28 +116,23 @@ const getWidthFromTireName = (name: string): string | null => {
   return null;
 };
 
-const parsePromoNameForForm = (name: string): ParsedPromo => {
+const parsePromoForOrder = (name: string): ParsedPromo => {
   const regex = /^(\S+)\s+(\d{2,3}\/\d{2}\s*R\d{2,3})\s+(.+?)\s+([\w\d]+\s*\S+)$/;
   const match = name.match(regex);
 
   if (match) {
     return {
-      brand: match[1],
-      series: match[3],
-      specDetails: `${match[2]} ${match[4]}`
+      size: match[2],
+      series: match[3]
     };
   }
 
+  const sizeMatch = name.match(/(\d{2,3}\/\d{2}\s*R\d{2,3})/);
+  const size = sizeMatch ? sizeMatch[1] : '';
   const parts = name.split(' ');
-  const brand = parts[0] || '';
-  const specDetails = parts.slice(1).join(' ') || '';
-  const series = parts.length > 2 ? parts.slice(1, parts.length - 1).join(' ') : '';
+  const series = parts.length > 3 ? parts.slice(2, parts.length - 2).join(' ') : '';
 
-  return {
-    brand,
-    series: parts.length > 3 && !specDetails.startsWith(series) ? '' : series,
-    specDetails
-  };
+  return { series, size };
 };
 
 const tireWidthOptions = ['155', '165', '175', '185', '195', '205', '215', '225', '235', '245', '255'];
@@ -223,18 +212,15 @@ const Promotions = () => {
             const installCost = getInstallationCost(promo.tireSizeInch);
             const installedPrice = promo.tirePrice + installCost;
             const shippedPrice = promo.tirePrice + SHIPPING_COST_PER_TIRE;
-            const { brand, series, specDetails } = parsePromoNameForForm(promo.name);
-
-            let prefilledGoogleFormUrl = `${GOOGLE_FORM_BASE_URL}?usp=pp_url`;
-            if (brand) {
-              prefilledGoogleFormUrl += `&${GOOGLE_FORM_ENTRY_ID_BRAND}=${encodeURIComponent(brand)}`;
-            }
+            const { series, size } = parsePromoForOrder(promo.name);
+            const orderLinkParams = new URLSearchParams();
             if (series) {
-              prefilledGoogleFormUrl += `&${GOOGLE_FORM_ENTRY_ID_SERIES}=${encodeURIComponent(series)}`;
+              orderLinkParams.set('series', series);
             }
-            if (specDetails) {
-              prefilledGoogleFormUrl += `&${GOOGLE_FORM_ENTRY_ID_SPECS}=${encodeURIComponent(specDetails)}`;
+            if (size) {
+              orderLinkParams.set('size', size);
             }
+            const orderLink = `/order${orderLinkParams.toString() ? `?${orderLinkParams.toString()}` : ''}`;
 
             return (
               <div key={promo.id} className={styles.promoCard}>
@@ -267,14 +253,9 @@ const Promotions = () => {
                     </div>
                   </div>
 
-                  <a
-                    href={prefilledGoogleFormUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.orderButton}
-                  >
-                    立即訂購 (前往表單)
-                  </a>
+                  <Link to={orderLink} className={styles.orderButton}>
+                    立即訂購
+                  </Link>
                 </div>
               </div>
             );
