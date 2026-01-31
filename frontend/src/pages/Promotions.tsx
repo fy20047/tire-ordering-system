@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Promotions.module.css';
 
@@ -19,6 +19,15 @@ type InstallationCost = {
 type ParsedPromo = {
   series: string;
   size: string;
+};
+
+type TireCatalogItem = {
+  id: number;
+  brand: string;
+  series: string;
+  size: string;
+  price: number | null;
+  isActive?: boolean;
 };
 
 const promotionsData: PromotionItem[] = [
@@ -135,14 +144,53 @@ const parsePromoForOrder = (name: string): ParsedPromo => {
   return { series, size };
 };
 
+const normalizeSeries = (value: string) => value.replace(/[^a-z0-9]/gi, '').toUpperCase();
+const normalizeSize = (value: string) => value.replace(/[^0-9R]/gi, '').toUpperCase();
+
+const isSeriesMatch = (dbSeries: string, promoSeries: string) => {
+  const left = normalizeSeries(dbSeries);
+  const right = normalizeSeries(promoSeries);
+  if (!left || !right) return false;
+  return left.includes(right) || right.includes(left);
+};
+
+const isSizeMatch = (dbSize: string, promoSize: string) =>
+  normalizeSize(dbSize) === normalizeSize(promoSize);
+
 const tireWidthOptions = ['155', '165', '175', '185', '195', '205', '215', '225', '235', '245', '255'];
 
 const Promotions = () => {
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
   const [selectedWidth, setSelectedWidth] = useState<string>('');
+  const [tireCatalog, setTireCatalog] = useState<TireCatalogItem[]>([]);
 
   useEffect(() => {
     document.title = '輪胎促銷活動 - 廣翊輪胎館';
   }, []);
+
+  useEffect(() => {
+    if (!apiBaseUrl) {
+      return;
+    }
+
+    const loadCatalog = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/tires?active=true`);
+        if (!response.ok) {
+          return;
+        }
+        const data = await response.json();
+        const items = Array.isArray(data) ? data : (data.items ?? []);
+        setTireCatalog(items);
+      } catch (error) {
+        // Fallback to static promo data if API fails
+      }
+    };
+
+    void loadCatalog();
+  }, [apiBaseUrl]);
+
+  const catalogLookup = useMemo(() => tireCatalog, [tireCatalog]);
 
   const getInstallationCost = (tireSizeInch: number) => {
     const foundCostInfo = installationCostsInfo.find(
@@ -160,26 +208,26 @@ const Promotions = () => {
       <h1 className={styles.pageTitle}>輪胎限時促銷</h1>
       <p className={styles.pageSubtitle}>於 2025/05/10 更新以下促銷輪胎</p>
 
-      <div className={styles.filterContainer}>
-        <h3 className={styles.filterTitle}>胎面寬度</h3>
-        <div className={styles.filterOptionsList}>
-          <button
-            className={`${styles.filterOptionButton} ${selectedWidth === '' ? styles.activeFilter : ''}`}
-            onClick={() => setSelectedWidth('')}
-          >
-            全部顯示
-          </button>
-          {tireWidthOptions.map((width) => (
-            <button
-              key={width}
-              className={`${styles.filterOptionButton} ${selectedWidth === width ? styles.activeFilter : ''}`}
-              onClick={() => setSelectedWidth(width)}
-            >
-              {width}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/*<div className={styles.filterContainer}>*/}
+      {/*  <h3 className={styles.filterTitle}>胎面寬度</h3>*/}
+      {/*  <div className={styles.filterOptionsList}>*/}
+      {/*    <button*/}
+      {/*      className={`${styles.filterOptionButton} ${selectedWidth === '' ? styles.activeFilter : ''}`}*/}
+      {/*      onClick={() => setSelectedWidth('')}*/}
+      {/*    >*/}
+      {/*      全部顯示*/}
+      {/*    </button>*/}
+      {/*    {tireWidthOptions.map((width) => (*/}
+      {/*      <button*/}
+      {/*        key={width}*/}
+      {/*        className={`${styles.filterOptionButton} ${selectedWidth === width ? styles.activeFilter : ''}`}*/}
+      {/*        onClick={() => setSelectedWidth(width)}*/}
+      {/*      >*/}
+      {/*        {width}*/}
+      {/*      </button>*/}
+      {/*    ))}*/}
+      {/*  </div>*/}
+      {/*</div>*/}
 
       <div className={styles.installationInfoSection}>
         <h2 className={styles.subHeading}>服務選項說明</h2>
@@ -210,15 +258,23 @@ const Promotions = () => {
         <div className={styles.promotionsGrid}>
           {filteredPromotions.map((promo) => {
             const installCost = getInstallationCost(promo.tireSizeInch);
-            const installedPrice = promo.tirePrice + installCost;
-            const shippedPrice = promo.tirePrice + SHIPPING_COST_PER_TIRE;
             const { series, size } = parsePromoForOrder(promo.name);
+            const matchedTire = catalogLookup.find(
+              (tire) => isSizeMatch(tire.size, size) && isSeriesMatch(tire.series, series)
+            );
+            const basePrice = matchedTire?.price ?? promo.tirePrice;
+            const installedPrice = basePrice + installCost;
+            const shippedPrice = basePrice + SHIPPING_COST_PER_TIRE;
             const orderLinkParams = new URLSearchParams();
-            if (series) {
-              orderLinkParams.set('series', series);
-            }
-            if (size) {
-              orderLinkParams.set('size', size);
+            if (matchedTire?.id) {
+              orderLinkParams.set('tireId', String(matchedTire.id));
+            } else {
+              if (series) {
+                orderLinkParams.set('series', series);
+              }
+              if (size) {
+                orderLinkParams.set('size', size);
+              }
             }
             const orderLink = `/order${orderLinkParams.toString() ? `?${orderLinkParams.toString()}` : ''}`;
 
@@ -227,7 +283,7 @@ const Promotions = () => {
                 <div className={styles.promoContent}>
                   <h3 className={styles.promoName}>{promo.name}</h3>
                   <p className={styles.promoTirePrice}>
-                    輪胎優惠價： <span className={styles.priceValue}>{promo.tirePrice}元/條</span>
+                    輪胎優惠價： <span className={styles.priceValue}>{basePrice}元/條</span>
                   </p>
 
                   <div className={styles.serviceOptionsContainer}>

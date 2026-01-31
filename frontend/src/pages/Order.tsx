@@ -317,18 +317,29 @@ const OrderPage = () => {
   }
 
   function normalizeText(value: string) {
-    return value.trim().toLowerCase();
+    return value.replace(/[^a-z0-9]/gi, '').toUpperCase();
   }
 
   function normalizeSize(value: string) {
-    return value.replace(/\s+/g, '').toUpperCase();
+    return value.replace(/[^0-9R]/gi, '').toUpperCase();
+  }
+
+  function isSeriesMatch(dbSeries: string, promoSeries: string) {
+    const left = normalizeText(dbSeries);
+    const right = normalizeText(promoSeries);
+    if (!left || !right) return false;
+    return left.includes(right) || right.includes(left);
+  }
+
+  function isSizeMatch(dbSize: string, promoSize: string) {
+    return normalizeSize(dbSize) === normalizeSize(promoSize);
   }
 
   function matchesPrefill(tire: Tire, series: string, size: string) {
-    if (series && normalizeText(tire.series) !== normalizeText(series)) {
+    if (series && !isSeriesMatch(tire.series, series)) {
       return false;
     }
-    if (size && normalizeSize(tire.size) !== normalizeSize(size)) {
+    if (size && !isSizeMatch(tire.size, size)) {
       return false;
     }
     return true;
