@@ -82,6 +82,43 @@
   margin-top: 0.5rem;
 }
 
+.serviceInfoCard {
+  margin-top: 1.5rem;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.serviceInfoTitle {
+  margin: 0 0 0rem;
+  color: #ff8c00;
+  font-size: 1.05rem;
+}
+
+.serviceInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.serviceInfoItem ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.serviceInfoItem li {
+  margin-bottom: 0.35rem;
+}
+
+.serviceInfoNote {
+  color: #aaaaaa;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
+
 .radioGroup {
   display: flex;
   gap: 1.5rem;

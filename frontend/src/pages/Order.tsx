@@ -445,6 +445,83 @@ const OrderPage = () => {
           </fieldset>
 
           <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>服務方式</legend>
+            <div className={styles.formGroup}>
+              <label htmlFor="installationOption" className={styles.label}>
+                安裝/配送方式 <span className={styles.required}>*</span>
+              </label>
+              <select
+                id="installationOption"
+                name="installationOption"
+                value={formData.installationOption}
+                onChange={handleInputChange}
+                className={styles.input}
+                required
+              >
+                <option value="INSTALL">到店安裝</option>
+                <option value="PICKUP">到店取貨</option>
+                <option value="DELIVERY">住家配送</option>
+              </select>
+              <p className={styles.helperText}>配送才需要填地址，其他方式免填。</p>
+            </div>
+            {formData.installationOption === 'DELIVERY' && (
+              <div className={styles.formGroup}>
+                <label htmlFor="deliveryAddress" className={styles.label}>
+                  配送地址 <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="text"
+                  id="deliveryAddress"
+                  name="deliveryAddress"
+                  value={formData.deliveryAddress}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  required
+                />
+              </div>
+            )}
+            <div className={styles.serviceInfoCard}>
+              <h3 className={styles.serviceInfoTitle}>服務選項說明</h3>
+              <div className={styles.serviceInfoGrid}>
+                <div className={styles.serviceInfoItem}>
+                  <p>現場安裝：</p>
+                  <ul>
+                    <li>14-16吋：300 元/條</li>
+                    <li>17-18吋：400 元/條</li>
+                    <li>19-20吋：500 元/條</li>
+                  </ul>
+                </div>
+                <div className={styles.serviceInfoItem}>
+                  <p>寄送到府：</p>
+                  <ul>
+                    <li>運費 100 元/條（不含安裝）</li>
+                  </ul>
+                  <p className={styles.serviceInfoNote}>亦可填寫表單後預約到店自取</p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>車款資訊</legend>
+            <div className={styles.formGroup}>
+              <label htmlFor="carModel" className={styles.label}>
+                車款資訊 <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                id="carModel"
+                name="carModel"
+                value={formData.carModel}
+                onChange={handleInputChange}
+                className={styles.input}
+                placeholder="例：Toyota Altis 2019"
+                required
+              />
+            </div>
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>訂購人資料</legend>
             <div className={styles.formGroup}>
               <label htmlFor="customerName" className={styles.label}>
@@ -483,63 +560,6 @@ const OrderPage = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 className={styles.input}
-              />
-            </div>
-          </fieldset>
-
-          <fieldset className={styles.fieldset}>
-            <legend className={styles.legend}>服務方式</legend>
-            <div className={styles.formGroup}>
-              <label htmlFor="installationOption" className={styles.label}>
-                安裝/配送方式 <span className={styles.required}>*</span>
-              </label>
-              <select
-                id="installationOption"
-                name="installationOption"
-                value={formData.installationOption}
-                onChange={handleInputChange}
-                className={styles.input}
-                required
-              >
-                <option value="INSTALL">到店安裝</option>
-                <option value="PICKUP">到店取貨</option>
-                <option value="DELIVERY">住家配送</option>
-              </select>
-              <p className={styles.helperText}>配送才需要填地址，其他方式免填。</p>
-            </div>
-            {formData.installationOption === 'DELIVERY' && (
-              <div className={styles.formGroup}>
-                <label htmlFor="deliveryAddress" className={styles.label}>
-                  配送地址 <span className={styles.required}>*</span>
-                </label>
-                <input
-                  type="text"
-                  id="deliveryAddress"
-                  name="deliveryAddress"
-                  value={formData.deliveryAddress}
-                  onChange={handleInputChange}
-                  className={styles.input}
-                  required
-                />
-              </div>
-            )}
-          </fieldset>
-
-          <fieldset className={styles.fieldset}>
-            <legend className={styles.legend}>車款資訊</legend>
-            <div className={styles.formGroup}>
-              <label htmlFor="carModel" className={styles.label}>
-                車款資訊 <span className={styles.required}>*</span>
-              </label>
-              <input
-                type="text"
-                id="carModel"
-                name="carModel"
-                value={formData.carModel}
-                onChange={handleInputChange}
-                className={styles.input}
-                placeholder="例：Toyota Altis 2019"
-                required
               />
             </div>
           </fieldset>
