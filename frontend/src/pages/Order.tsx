@@ -40,6 +40,10 @@ const OrderPage = () => {
   const [tireLoading, setTireLoading] = useState(true);
   const [tireError, setTireError] = useState<string | null>(null);
   const [widthFilter, setWidthFilter] = useState('');
+  const selectedTire = useMemo(
+    () => tireOptions.find((tire) => tire.id === selectedTireId) ?? null,
+    [tireOptions, selectedTireId]
+  );
 
   const [formData, setFormData] = useState<OrderFormData>({
     customerName: '',
@@ -71,7 +75,12 @@ const OrderPage = () => {
     if (!widthFilter) {
       return tireOptions;
     }
-    return tireOptions.filter((tire) => extractWidth(tire.size) === widthFilter);
+    return tireOptions.filter((tire) => {
+      if (isAssistanceOption(tire)) {
+        return true;
+      }
+      return extractWidth(tire.size) === widthFilter;
+    });
   }, [tireOptions, widthFilter]);
 
   useEffect(() => {
@@ -221,6 +230,12 @@ const OrderPage = () => {
       return;
     }
 
+    if (selectedTire && isAssistanceOption(selectedTire) && !formData.notes.trim()) {
+      setSubmitStatus('error');
+      setSubmitMessage('選擇客服協助 / 維修服務 / 找不到輪胎時，請填寫備註。');
+      return;
+    }
+
     if (formData.installationOption === 'DELIVERY' && !formData.deliveryAddress.trim()) {
       setSubmitStatus('error');
       setSubmitMessage('請填寫配送地址。');
@@ -346,12 +361,25 @@ const OrderPage = () => {
   }
 
   function formatTireOptionLabel(tire: Tire) {
+    if (isAssistanceOption(tire)) {
+      return '客服協助 / 維修服務 / 找不到輪胎';
+    }
     const size = tire.size?.trim(); // 拿輪胎尺寸，順便去掉前後空白
     const hasRealSize = size && size !== '-' && size !== '—'; // 判斷尺寸是不是有效，只要尺寸不是 - 或 —，就算有效
     const parts = [tire.brand, tire.series, hasRealSize ? size : ''].filter(Boolean);
     const baseLabel = parts.join(' ');
     const priceLabel = tire.price !== null ? ` - ${tire.price} 元` : ''; // 如果有價格才加 - 價格
     return `${baseLabel}${priceLabel}`;
+  }
+
+  function isAssistanceOption(tire: Tire) {
+    const combined = `${tire.brand ?? ''} ${tire.series ?? ''}`.replace(/\s+/g, '');
+    return (
+      combined.includes('客服協助') ||
+      combined.includes('找不到輪胎') ||
+      combined.includes('維修服務') ||
+      combined.includes('其他')
+    );
   }
 
   return (
@@ -428,7 +456,7 @@ const OrderPage = () => {
                   )}
                   {!isTireLocked && (
                     <p className={styles.helperText}>
-                      找不到輪胎？請在備註填寫型號與尺寸，我們會協助確認。
+                      找不到輪胎或需要維修服務？可選「客服協助 / 維修服務 / 找不到輪胎」，並在備註填寫需求。
                     </p>
                   )}
                 </div>
@@ -578,7 +606,12 @@ const OrderPage = () => {
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>備註</legend>
             <div className={styles.formGroup}>
-              <label htmlFor="notes" className={styles.label}>備註（預約時間或其他需求）</label>
+              <label htmlFor="notes" className={styles.label}>
+                備註（預約時間或其他需求）
+                {selectedTire && isAssistanceOption(selectedTire) && (
+                  <span className={styles.required}>*</span>
+                )}
+              </label>
               <textarea
                 id="notes"
                 name="notes"
@@ -587,7 +620,11 @@ const OrderPage = () => {
                 className={styles.textarea}
                 rows={4}
                 placeholder="例：希望平日晚上安裝、請先電話聯繫"
+                required={Boolean(selectedTire && isAssistanceOption(selectedTire))}
               />
+              {selectedTire && isAssistanceOption(selectedTire) && (
+                <p className={styles.helperText}>請輸入維修項目或輪胎需求，否則無法送出。</p>
+              )}
             </div>
           </fieldset>
 

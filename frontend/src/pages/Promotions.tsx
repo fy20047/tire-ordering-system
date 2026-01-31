@@ -157,11 +157,11 @@ const isSeriesMatch = (dbSeries: string, promoSeries: string) => {
 const isSizeMatch = (dbSize: string, promoSize: string) =>
   normalizeSize(dbSize) === normalizeSize(promoSize);
 
-const tireWidthOptions = ['155', '165', '175', '185', '195', '205', '215', '225', '235', '245', '255'];
+// const tireWidthOptions = ['155', '165', '175', '185', '195', '205', '215', '225', '235', '245', '255'];
 
 const Promotions = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
-  const [selectedWidth, setSelectedWidth] = useState<string>('');
+  const [selectedWidth] = useState<string>('');
   const [tireCatalog, setTireCatalog] = useState<TireCatalogItem[]>([]);
 
   useEffect(() => {
